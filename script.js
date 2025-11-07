@@ -20,6 +20,11 @@ function initializeApp() {
     // Image upload preview
     document.getElementById('wallImage').addEventListener('change', handleImageUpload);
 
+    // Make upload area clickable
+    document.getElementById('uploadArea').addEventListener('click', () => {
+        document.getElementById('wallImage').click();
+    });
+
     // Category selection
     document.querySelectorAll('.category-card').forEach(card => {
         card.addEventListener('click', () => selectCategory(card));
@@ -32,9 +37,6 @@ function initializeApp() {
 
     // Submit button
     document.getElementById('submitBtn').addEventListener('click', handleSubmit);
-
-    // Reset button
-    document.getElementById('resetBtn').addEventListener('click', handleReset);
 }
 
 // Handle image upload preview
@@ -43,9 +45,12 @@ function handleImageUpload(e) {
     if (file) {
         const reader = new FileReader();
         reader.onload = (event) => {
-            document.getElementById('wallPreview').src = event.target.result;
-            document.getElementById('wallPreview').style.display = 'block';
-            document.getElementById('uploadPlaceholder').style.display = 'none';
+            const preview = document.getElementById('wallPreview');
+            const placeholder = document.getElementById('uploadPlaceholder');
+
+            preview.src = event.target.result;
+            preview.classList.remove('hidden');
+            placeholder.classList.add('hidden');
         };
         reader.readAsDataURL(file);
     }
@@ -392,22 +397,25 @@ function handleReset() {
     document.getElementById('categoryInput').value = '';
     document.getElementById('colorInput').value = '';
 
-    // Reset image
-    document.getElementById('wallPreview').style.display = 'none';
-    document.getElementById('uploadPlaceholder').style.display = 'block';
+    // Reset image using Tailwind classes
+    const preview = document.getElementById('wallPreview');
+    const placeholder = document.getElementById('uploadPlaceholder');
+    preview.classList.add('hidden');
+    placeholder.classList.remove('hidden');
 
     // Clear selections
     document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
     document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
 
-    // Show form, hide results
-    document.querySelectorAll('.section').forEach(s => s.style.display = 'block');
-    document.getElementById('artMatchForm').style.display = 'block';
-    document.getElementById('results').style.display = 'none';
+    // Show form sections
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('hidden'));
+
+    // Hide results
+    document.getElementById('results').classList.add('hidden');
 
     // Reset button
     document.getElementById('submitBtn').disabled = false;
-    document.getElementById('submitBtn').textContent = 'Find Perfect Art';
+    document.getElementById('submitBtn').textContent = 'Find Perfect Artworks';
 
     console.log('Reset complete');
 }
