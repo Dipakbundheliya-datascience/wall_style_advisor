@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
 });
 
+// Global state to store multiple selections
+const selectedCategories = new Set();
+const selectedColors = new Set();
+
 function initializeApp() {
     // Image upload preview
     document.getElementById('wallImage').addEventListener('change', handleImageUpload);
@@ -25,14 +29,14 @@ function initializeApp() {
         document.getElementById('wallImage').click();
     });
 
-    // Category selection
+    // Category selection - multiple
     document.querySelectorAll('.category-card').forEach(card => {
-        card.addEventListener('click', () => selectCategory(card));
+        card.addEventListener('click', () => toggleCategory(card));
     });
 
-    // Color selection
+    // Color selection - multiple
     document.querySelectorAll('.color-btn').forEach(btn => {
-        btn.addEventListener('click', () => selectColor(btn));
+        btn.addEventListener('click', () => toggleColor(btn));
     });
 
     // Submit button
@@ -56,32 +60,52 @@ function handleImageUpload(e) {
     }
 }
 
-// Handle category selection
-function selectCategory(card) {
-    document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    document.getElementById('categoryInput').value = card.dataset.category;
+// Handle category selection - multiple selection
+function toggleCategory(card) {
+    const category = card.dataset.category;
+
+    if (selectedCategories.has(category)) {
+        selectedCategories.delete(category);
+        card.classList.remove('selected');
+    } else {
+        selectedCategories.add(category);
+        card.classList.add('selected');
+    }
+
+    // Update hidden input with comma-separated values
+    document.getElementById('categoryInput').value = Array.from(selectedCategories).join(',');
+    console.log('Selected categories:', Array.from(selectedCategories));
 }
 
-// Handle color selection
-function selectColor(btn) {
-    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    document.getElementById('colorInput').value = btn.dataset.color;
+// Handle color selection - multiple selection
+function toggleColor(btn) {
+    const color = btn.dataset.color;
+
+    if (selectedColors.has(color)) {
+        selectedColors.delete(color);
+        btn.classList.remove('selected');
+    } else {
+        selectedColors.add(color);
+        btn.classList.add('selected');
+    }
+
+    // Update hidden input with comma-separated values
+    document.getElementById('colorInput').value = Array.from(selectedColors).join(',');
+    console.log('Selected colors:', Array.from(selectedColors));
 }
 
 // Validate form data
-function validateForm(wallImage, category, color) {
+function validateForm(wallImage, categories, colors) {
     if (!wallImage) {
         alert('Please upload a wall image');
         return false;
     }
-    if (!category) {
-        alert('Please select a category');
+    if (!categories || categories.length === 0) {
+        alert('Please select at least one category');
         return false;
     }
-    if (!color) {
-        alert('Please select a color');
+    if (!colors || colors.length === 0) {
+        alert('Please select at least one color');
         return false;
     }
     return true;
@@ -98,17 +122,17 @@ async function convertImageToBase64(file) {
 }
 
 // Call the API
-async function callMatchAPI(imageBase64, category, color) {
+async function callMatchAPI(imageBase64, categories, colors) {
     const requestData = {
         wall_image: imageBase64,
-        category: category,
+        categories: categories,  // Array of categories
         budget: 5000,  // Default budget value
-        color: color
+        colors: colors  // Array of colors
     };
 
     console.log('Calling API with:', {
-        category,
-        color,
+        categories,
+        colors,
         imageSize: (imageBase64.length / 1024 / 1024).toFixed(2) + ' MB'
     });
 
@@ -218,11 +242,11 @@ async function handleSubmit() {
 
     // Get form values
     const wallImage = document.getElementById('wallImage').files[0];
-    const category = document.getElementById('categoryInput').value;
-    const color = document.getElementById('colorInput').value;
+    const categories = Array.from(selectedCategories);
+    const colors = Array.from(selectedColors);
 
     // Validate
-    if (!validateForm(wallImage, category, color)) {
+    if (!validateForm(wallImage, categories, colors)) {
         return;
     }
 
@@ -242,7 +266,7 @@ async function handleSubmit() {
 
         // Call API
         console.log('Calling API...');
-        const data = await callMatchAPI(base64Image, category, color);
+        const data = await callMatchAPI(base64Image, categories, colors);
         console.log('API response received:', data);
 
         // Hide loading
@@ -391,6 +415,10 @@ function displayArtworks(artworks, container) {
 // Reset form
 function handleReset() {
     console.log('Resetting form');
+
+    // Clear selected sets
+    selectedCategories.clear();
+    selectedColors.clear();
 
     // Reset form
     document.getElementById('artMatchForm').reset();

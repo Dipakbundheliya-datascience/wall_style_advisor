@@ -90,10 +90,10 @@ def match_artworks():
             image_data = base64.b64decode(base64_image)
             print(f"Image decoded, size: {len(image_data)} bytes")
 
-            # Get user preferences from JSON
-            category = data.get('category')
-            budget = float(data.get('budget', 0))
-            color = data.get('color')
+            # Get user preferences from JSON (now supporting arrays)
+            categories = data.get('categories', [])
+            budget = float(data.get('budget', 10000))  # Default budget
+            colors = data.get('colors', [])
 
             elapsed = time.time() - start_time
             print(f"⏱️ Total time so far: {elapsed:.3f} seconds")
@@ -121,15 +121,15 @@ def match_artworks():
             print(f"Image read from file, size: {len(image_data)} bytes")
 
             # Get user preferences from form
-            category = request.form.get('category')
-            budget = float(request.form.get('budget', 0))
-            color = request.form.get('color')
-        
-        print(f"Preferences - Category: {category}, Budget: {budget}, Color: {color}")
+            categories = request.form.get('categories', '').split(',')
+            budget = float(request.form.get('budget', 10000))
+            colors = request.form.get('colors', '').split(',')
 
-        # Find matching artworks
+        print(f"Preferences - Categories: {categories}, Budget: {budget}, Colors: {colors}")
+
+        # Find matching artworks (limit to 2 most relevant)
         print("Finding matching artworks...")
-        artworks = art_matcher.find_matches(category, budget, color, max_results=2)
+        artworks = art_matcher.find_matches(categories, budget, colors, max_results=2)
         
         if not artworks:
             print("ERROR: No matching artworks found")
