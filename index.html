@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WallMatch - AI Art Placement</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 WallMatch</h1>
+            <p>Upload your wall, select preferences, and see AI-matched artworks</p>
+        </header>
+
+        <main id="mainContent">
+            <form id="artMatchForm">
+                <!-- Step 1: Upload Wall Image -->
+                <section class="section">
+                    <h2>1. Upload Your Wall Photo</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="wallImage" name="wall_image" accept="image/*" style="display: none;" required>
+                        <label for="wallImage" class="upload-label">
+                            <div id="uploadPlaceholder" class="upload-placeholder">
+                                <span class="upload-icon">📸</span>
+                                <p>Click to upload wall image</p>
+                            </div>
+                            <img id="wallPreview" class="preview-image" style="display: none;">
+                        </label>
+                    </div>
+                </section>
+
+                <!-- Step 2: Select Category -->
+                <section class="section">
+                    <h2>2. Select Art Category</h2>
+                    <input type="hidden" id="categoryInput" name="category" required>
+                    <div class="category-grid">
+                        <button type="button" class="category-card" data-category="classical">
+                            <span class="category-icon">🏛️</span>
+                            <span class="category-name">Classical</span>
+                        </button>
+                        <button type="button" class="category-card" data-category="aesthetic">
+                            <span class="category-icon">✨</span>
+                            <span class="category-name">Aesthetic</span>
+                        </button>
+                        <button type="button" class="category-card" data-category="impressive">
+                            <span class="category-icon">💎</span>
+                            <span class="category-name">Impressive</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Step 3: Color Picker -->
+                <section class="section">
+                    <h2>3. Select Desired Color</h2>
+                    <input type="hidden" id="colorInput" name="color" required>
+                    <div class="color-grid" id="colorGrid">
+                        <button type="button" class="color-btn" data-color="Red" style="background-color: #FF0000;" title="Red"></button>
+                        <button type="button" class="color-btn" data-color="Blue" style="background-color: #0000FF;" title="Blue"></button>
+                        <button type="button" class="color-btn" data-color="Green" style="background-color: #00FF00;" title="Green"></button>
+                        <button type="button" class="color-btn" data-color="Yellow" style="background-color: #FFFF00;" title="Yellow"></button>
+                        <button type="button" class="color-btn" data-color="Orange" style="background-color: #FFA500;" title="Orange"></button>
+                        <button type="button" class="color-btn" data-color="Purple" style="background-color: #800080;" title="Purple"></button>
+                        <button type="button" class="color-btn" data-color="Pink" style="background-color: #FFC0CB;" title="Pink"></button>
+                        <button type="button" class="color-btn" data-color="Brown" style="background-color: #8B4513;" title="Brown"></button>
+                        <button type="button" class="color-btn" data-color="Black" style="background-color: #000000;" title="Black"></button>
+                        <button type="button" class="color-btn" data-color="White" style="background-color: #FFFFFF; border: 2px solid #ccc;" title="White"></button>
+                    </div>
+                </section>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="error" style="display: none;"></div>
+
+            </form>
+
+            <!-- Submit Button (outside form to prevent any submit behavior) -->
+            <button type="button" id="submitBtn" class="submit-btn">Find Perfect Art</button>
+
+            <!-- Loading Spinner -->
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Matching artworks with AI...</p>
+            </div>
+
+            <!-- Results Section (dynamically populated) -->
+            <section id="results" class="results-section" style="display: none;">
+                <!-- Content will be dynamically added by JavaScript -->
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
