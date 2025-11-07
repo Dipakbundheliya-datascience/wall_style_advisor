@@ -330,7 +330,7 @@ function displayResults(data) {
     resetBtn.id = 'resetBtn';
     resetBtn.className = 'reset-btn';
     resetBtn.textContent = 'Try Another Wall';
-    resetBtn.addEventListener('click', handleReset);
+    resetBtn.onclick = handleReset;  // Use onclick for dynamically created button
     resultsSection.appendChild(resetBtn);
 
     console.log('Results displayed');
@@ -414,38 +414,60 @@ function displayArtworks(artworks, container) {
 
 // Reset form
 function handleReset() {
-    console.log('Resetting form');
+    console.log('Resetting form - returning to home page');
 
     // Clear selected sets
     selectedCategories.clear();
     selectedColors.clear();
 
     // Reset form
-    document.getElementById('artMatchForm').reset();
+    const form = document.getElementById('artMatchForm');
+    form.reset();
     document.getElementById('categoryInput').value = '';
     document.getElementById('colorInput').value = '';
 
-    // Reset image using Tailwind classes
+    // Reset file input
+    document.getElementById('wallImage').value = '';
+
+    // Reset image preview
     const preview = document.getElementById('wallPreview');
     const placeholder = document.getElementById('uploadPlaceholder');
+    preview.src = '';
     preview.classList.add('hidden');
     placeholder.classList.remove('hidden');
 
-    // Clear selections
+    // Clear selections visually
     document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
     document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
 
-    // Show form sections
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('hidden'));
+    // Show the form
+    form.style.display = 'block';
 
-    // Hide results
-    document.getElementById('results').classList.add('hidden');
+    // Show all form sections
+    document.querySelectorAll('.section').forEach(s => {
+        s.style.display = 'block';
+        s.classList.remove('hidden');
+    });
 
-    // Reset button
-    document.getElementById('submitBtn').disabled = false;
-    document.getElementById('submitBtn').textContent = 'Find Perfect Artworks';
+    // Hide results section completely
+    const resultsSection = document.getElementById('results');
+    resultsSection.style.display = 'none';
+    resultsSection.classList.add('hidden');
+    resultsSection.innerHTML = ''; // Clear results content
 
-    console.log('Reset complete');
+    // Reset and show submit button
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Find Perfect Artworks';
+    submitBtn.style.display = 'block';
+
+    // Hide loading if visible
+    document.getElementById('loading').style.display = 'none';
+
+    // Scroll to top smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    console.log('Reset complete - returned to home page');
 }
 
 console.log('Script ready');

@@ -59,24 +59,38 @@ class GeminiService:
 
         # Use the EXACT same prompt as test.py (proven to work)
         prompt = """
-        You are a professional interior designer and photorealistic image editor.
-        Your task is to add the given artwork onto the uploaded wall image in the most realistic way possible.
+        You are a professional interior designer and expert photorealistic image compositor.
 
-        Rules:
-        Do NOT remove, crop, replace, or modify any existing objects in the wall image (TV, frames, shelves, plants, lamps, decor, switches, textures).
-        The artwork must be placed only where a real painting could naturally hang.
-        Identify the visible empty wall space and locate the most suitable position without covering any objects.
+        Your task: Add the provided artwork onto the wall in the uploaded room image.
 
-        Placement Guidelines:
-        Position at typical gallery eye-level (approx. center horizontally and vertically relative to empty space).
-        Artwork size should be around ~35% of wall height.
-        Add a simple, thin white wooden frame.
-        Preserve original wall texture, light direction, shadows, and perspective.
-        Blend realistically so it looks physically mounted on the wall.
-        Ensure photorealism: correct shadows, reflections, wall depth, and lighting color temperature.
+        HARD RULES (must never be violated):
+        Do NOT remove, erase, replace, cover, modify, blur, hide, or alter ANY existing object in the image.
+        Do NOT cover objects such as TV, plants, shelves, photos, furniture, switches, windows, curtains, doors, or decorations.
+        Do NOT change the room layout, lighting fixtures, shadows, or wall texture.
+        The original wall and all objects must remain exactly as they are.
 
-        Output:
-        Generate a realistic edited wall image with the artwork properly mounted, without altering anything else in the original image.
+        PLACEMENT INSTRUCTIONS:
+        1. Detect empty visible wall space where a real painting can physically hang.
+        2. Place the artwork ONLY in an empty area of the wall.
+        3. Center at realistic human eye-level relative to the room layout.
+        4. Artwork size: ~35% of wall height, scaled naturally to perspective.
+        5. Add a thin white wooden frame around the artwork.
+        6. Ensure correct perspective, depth, texture, shadows, and light direction.
+        7. The artwork must look physically mounted, not floating or digitally pasted.
+
+        REALISM REQUIREMENTS:
+        Match lighting color temperature and shadow softness.
+        Maintain original resolution of the wall.
+        No distortions, warping, noise, or artifacts.
+        The result must be photorealistic and gallery-quality.
+
+        VALIDATION CHECK BEFORE OUTPUT:
+        Confirm no object was altered.
+        Confirm the artwork is placed only on empty wall area.
+        Confirm realistic scale, frame, lighting, and perspective.
+
+        Final Output:
+        Return a photorealistic edited image with the artwork mounted on the wall, obeying all rules above, without changing anything else in the original image.
         """
 
         print("🚀 Sending to Gemini 2.5 Flash Image... (5-15 sec)")
