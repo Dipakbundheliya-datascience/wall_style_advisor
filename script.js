@@ -24,7 +24,7 @@ function initializeApp() {
     // Image upload preview
     document.getElementById('wallImage').addEventListener('change', handleImageUpload);
 
-    // Make upload area clickable
+    // Upload area click
     document.getElementById('uploadArea').addEventListener('click', () => {
         document.getElementById('wallImage').click();
     });
@@ -136,8 +136,6 @@ async function callMatchAPI(imageBase64, categories, colors) {
         imageSize: (imageBase64.length / 1024 / 1024).toFixed(2) + ' MB'
     });
 
-    console.log('Fetch starting...');
-
     try {
         const response = await fetch(`${API_URL}/match`, {
             method: 'POST',
@@ -149,30 +147,17 @@ async function callMatchAPI(imageBase64, categories, colors) {
             mode: 'cors'
         });
 
-        console.log('Fetch completed!');
-        console.log('Response status:', response.status);
-        console.log('Response ok:', response.ok);
-        console.log('Response headers:', [...response.headers.entries()]);
-
         if (!response.ok) {
             const errorText = await response.text();
             console.error('Error response text:', errorText);
             throw new Error(`API error: ${response.status} - ${errorText}`);
         }
 
-        console.log('Parsing JSON response...');
         const data = await response.json();
-        console.log('Response JSON parsed successfully');
-        console.log('Response data keys:', Object.keys(data));
-        console.log('Response has success:', data.success);
-        console.log('Response has artworks:', !!data.artworks);
-        console.log('Response has composite_image:', !!data.composite_image);
         return data;
 
     } catch (fetchError) {
         console.error('Fetch error caught:', fetchError);
-        console.error('Error name:', fetchError.name);
-        console.error('Error message:', fetchError.message);
         throw fetchError;
     }
 }
@@ -412,6 +397,7 @@ function displayArtworks(artworks, container) {
     container.appendChild(artworksList);
 }
 
+// Reset form
 // Reset form
 function handleReset() {
     console.log('Resetting form - returning to home page');
